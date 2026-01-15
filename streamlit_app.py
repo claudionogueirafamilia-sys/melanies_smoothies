@@ -12,7 +12,7 @@ name_on_order = st.text_input('Name on Smoothie:')
 st.write('The name on your Smoothie will be:', name_on_order)
 
 cnx = st.connection("snowflake")
-session=cnx.session()
+session = cnx.session()
 #session = get_active_session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
 #st.dataframe(data=my_dataframe, use_container_width=True)
@@ -20,7 +20,7 @@ my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT
 ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:'
     , my_dataframe
-    , max_selections=6
+    , max_selections=5
 )
 
 if ingredients_list:
@@ -32,8 +32,12 @@ if ingredients_list:
 
     #st.write(ingredients_string)
 
-    my_insert_stmt = """ insert into smoothies.public.orders(ingredients)
-            values ('""" + ingredients_string + """','"""+name_on_order+ """')"""
+   
+    my_insert_stmt = f"""
+    INSERT INTO smoothies.public.orders (INGREDIENTS, NAME_ON_ORDER)
+    VALUES ('{ingredients_string}', '{name_on_order}')
+    """
+
     #st.write(my_insert_stmt)
     #st.stop()
 
